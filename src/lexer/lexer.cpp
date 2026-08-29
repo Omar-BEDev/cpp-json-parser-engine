@@ -62,7 +62,7 @@ void collect_value(KeyState *ks) {
             (*ks->tokens)[ks->tokenIndex].column = ks->column;
         }
         if (ks->i+1 < ks->size && ks->content[ks->i] == BACKSLACH) {
-            if (ks->content[ks->i] + 1 == 'u') {
+            if (ks->content[(ks->i) + 1] == 'u') {
                 bool result = checkJsonHexValue(ks,&valueArr);
                 if (!result) {
                     return;
@@ -70,7 +70,7 @@ void collect_value(KeyState *ks) {
             }
             ErrorType errorType = INVALID_ESCAPE_SEQUENCE;
             switch (ks->content[ks->i] + 1) {
-                case 'q' | 'f' | 'r' | 'n' | 't':
+                case 'q': case 'f': case 'r': case 'n': case 't':
                 valueArr.push_back(ks->content[(ks->i)]);
                 (ks->column)++;
                 continue;
@@ -82,9 +82,9 @@ void collect_value(KeyState *ks) {
     }
     
     if (columns_additions >= 1) {
-    *ks->key = valueArr.data();
-    (*ks->tokens)[ks->tokenIndex].token_type = KEY;
-    (*ks->tokens)[ks->tokenIndex].val = *ks->key;
+    *ks->value = valueArr.data();
+    (*ks->tokens)[ks->tokenIndex].token_type = VALUE;
+    (*ks->tokens)[ks->tokenIndex].val = *ks->value;
     (*ks->tokens)[ks->tokenIndex].line = ks->line;
     }    
 }
