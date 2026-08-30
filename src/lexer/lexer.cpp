@@ -29,10 +29,10 @@ void collect_key(
     KeyState* ks
 ) {
     int columns_additions = 0;
-    std::vector<char> keyArr;
+    
     if (ks->content[(ks->i)++] == '"') {
         while (ks->i < ks->size && (ks->state == KEY && ks->content[(ks->i)++] != '"') ) {
-            keyArr.push_back(ks->content[(ks->i)]);
+            ks->textValue.push_back(ks->content[(ks->i)]);
             (ks->column)++;
             columns_additions++;
             if (columns_additions == 1) {
@@ -41,19 +41,20 @@ void collect_key(
         }
     }
     if (columns_additions >= 1) {
-    *ks->key = keyArr.data();
+    ks->key = ks->textValue.data();
     (*ks->tokens)[ks->tokenIndex].token_type = KEY;
-    (*ks->tokens)[ks->tokenIndex].val = *ks->key;
+    (*ks->tokens)[ks->tokenIndex].val = ks->key;
     (*ks->tokens)[ks->tokenIndex].line = ks->line;
-    }                                   
+    } 
+                           
 }
 
 void collect_value(KeyState *ks) {
     int columns_additions = 0;
-    std::vector<char> valueArr;
+    
     ks->i++;
     while (ks->i < ks->size && (ks->state == KEY && ks->content[(ks->i)++] != '"') ) {
-        valueArr.push_back(ks->content[(ks->i)]);
+        ks->textValue.push_back(ks->content[(ks->i)]);
         (ks->column)++;
         columns_additions++;
         if (columns_additions == 1) {
@@ -61,7 +62,7 @@ void collect_value(KeyState *ks) {
         }
         if (ks->i+1 < ks->size && ks->content[ks->i] == BACKSLACH) {
             if (ks->content[(ks->i) + 1] == 'u') {
-                bool result = checkJsonHexValue(ks,&valueArr);
+                bool result = checkJsonHexValue(ks,&ks->textValue);
                 if (!result) {
                     return;
                 }
@@ -69,7 +70,7 @@ void collect_value(KeyState *ks) {
             ErrorType errorType = INVALID_ESCAPE_SEQUENCE;
             switch (ks->content[ks->i] + 1) {
                 case 'q': case 'f': case 'r': case 'n': case 't':
-                valueArr.push_back(ks->content[(ks->i)]);
+                ks->textValue.push_back(ks->content[(ks->i)]);
                 (ks->column)++;
                 continue;
                 default :
@@ -80,9 +81,9 @@ void collect_value(KeyState *ks) {
     }
     
     if (columns_additions >= 1) {
-    *ks->value = valueArr.data();
+    ks->value = ks->textValue.data();
     (*ks->tokens)[ks->tokenIndex].token_type = VALUE;
-    (*ks->tokens)[ks->tokenIndex].val = *ks->value;
+    (*ks->tokens)[ks->tokenIndex].val = ks->value;
     (*ks->tokens)[ks->tokenIndex].line = ks->line;
     }    
 }
@@ -92,8 +93,8 @@ Token* lexer(std::string_view content) {
     std::vector<Token> tokens;
     KeyState keystate = {
     .tokens = &tokens,
-    .key = NULL,
-    .value = NULL,
+    .key = {},
+    .value = {},
     .content = content,
     .size = size,
     };

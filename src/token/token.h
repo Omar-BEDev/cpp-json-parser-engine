@@ -1,6 +1,6 @@
 #ifndef TOKEN
 #define TOKEN 
-#include <string_view>
+#include <string>
 
 typedef enum {
     OPEN_CURLY_BRACES,
@@ -14,7 +14,7 @@ typedef enum {
 } TokenType ;
 
 typedef struct Token {
-    std::string_view val;
+    std::string val;
     TokenType token_type;
     int line;
     int column;
