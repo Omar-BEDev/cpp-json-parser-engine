@@ -6,7 +6,7 @@ CXXFLAGS := -std=c++17 -Wall -Wextra -O2
 SRC_DIR  := src
 OBJ_DIR  := obj
 BIN_DIR  := bin
-TARGET   := $(BIN_DIR)/my_program
+TARGET   := $(BIN_DIR)/main
 
 SOURCES  := $(shell find $(SRC_DIR) -name '*.cpp')
 

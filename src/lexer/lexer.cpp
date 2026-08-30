@@ -87,9 +87,18 @@ void collect_value(KeyState *ks) {
     (*ks->tokens)[ks->tokenIndex].line = ks->line;
     }    
 }
+void makeSymbolToken(std::vector<Token> *tokens, char symbol, KeyState* ks) {
+    TokenType token_type = searchSymbolType(symbol);
+    ks->state = VALUE;
+    ks->column++;
+    (*tokens)[ks->tokenIndex].token_type = token_type;
+    (*tokens)[ks->tokenIndex].val = symbol;
+    (*tokens)[ks->tokenIndex].column = ks->column;
+    (ks->i)++;
+}
 
-Token* lexer(std::string_view content) {
-    int size = content.size();
+std::vector<Token> lexer(std::string_view content) {
+    uint size = content.size();
     std::vector<Token> tokens;
     KeyState keystate = {
     .tokens = &tokens,
@@ -97,10 +106,41 @@ Token* lexer(std::string_view content) {
     .value = {},
     .content = content,
     .size = size,
+    .textValue = {}
     };
-    std::string_view *key;
-    std::string_view *value; 
+     
     while (keystate.i < keystate.size) {
+        if (keystate.content[keystate.i] == '[') {
+            makeSymbolToken(&tokens, '[', &keystate);
+        }
+        else if (keystate.content[keystate.i] == '{') {
+            makeSymbolToken(&tokens, '{', &keystate);
+        }
+        else if (keystate.content[keystate.i] == '"' && keystate.state == KEY) {
+            collect_key(&keystate);
+        }
+        if (keystate.content[keystate.i] == ':') {
+            makeSymbolToken(&tokens, ':', &keystate);
+        }
 
+        if (keystate.state == VALUE && tokens[keystate.tokenIndex - 1].val == ":") {
+            collect_value(&keystate);
+        }
+        if (keystate.content[keystate.i] == '}') {
+            makeSymbolToken(&tokens, '}', &keystate);
+        }
+        if (keystate.content[keystate.i] == ']') {
+            makeSymbolToken(&tokens, ']', &keystate);
+        }
+        else if (keystate.content[keystate.i] == '\n' || keystate.content[keystate.i] == SPACE_ASSCIV_ALUE) {
+            if (keystate.content[keystate.i] == '\n') {
+            keystate.line++;
+            }
+            keystate.i++;
+        }
+        else {
+            keystate.i++;
+        }
     }
+    return tokens;
 }

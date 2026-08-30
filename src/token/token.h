@@ -13,6 +13,7 @@ typedef enum {
     NOT_TOKEN_TYPE
 } TokenType ;
 
+
 typedef struct Token {
     std::string val;
     TokenType token_type;
