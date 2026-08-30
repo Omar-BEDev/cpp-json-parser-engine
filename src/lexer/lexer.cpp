@@ -6,7 +6,7 @@
 #include "../error-handling/error-handling.h"
 
 bool checkJsonHexValue(KeyState *ks, std::vector<char> *valueArr) {
-    bool isValidHexNum = true;
+
     int hexLen = 0;
 
     while(++ks->i < ks->size 
@@ -18,7 +18,7 @@ bool checkJsonHexValue(KeyState *ks, std::vector<char> *valueArr) {
             (ks->column)++;
             (*valueArr).push_back(ks->content[(ks->i)]);       
         }
-        if (hexLen < JSON_HEX_VALUE_LENGTH || hexLen > JSON_HEX_VALUE_LENGTH) {
+        if (hexLen < JSON_HEX_VALUE_LENGTH ) {
              print_error_message(INVALID_HEX_VALUE, ks->line, ks->column);
              return false;
         }
@@ -52,8 +52,6 @@ void collect_value(KeyState *ks) {
     int columns_additions = 0;
     std::vector<char> valueArr;
     ks->i++;
-    int slach_num = 0;
-    int isNeedString = true;
     while (ks->i < ks->size && (ks->state == KEY && ks->content[(ks->i)++] != '"') ) {
         valueArr.push_back(ks->content[(ks->i)]);
         (ks->column)++;
