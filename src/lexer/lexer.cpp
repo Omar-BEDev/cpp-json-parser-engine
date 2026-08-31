@@ -26,7 +26,7 @@ bool checkJsonHexValue(KeyState *ks, std::vector<char> *valueArr) {
 
 void collect_key(KeyState *ks) {
   int columns_additions = 0;
-
+  (*ks->tokens).push_back(Token{});
   while (ks->i < ks->size &&
          (ks->state == KEY && ks->content[++(ks->i)] != '"')) {
     ks->textValue.push_back(ks->content[(ks->i)]);
@@ -38,8 +38,8 @@ void collect_key(KeyState *ks) {
   }
 
   if (columns_additions >= 1) {
+    ks->textValue.push_back('\0');
     ks->key = ks->textValue.data();
-    (*ks->tokens).push_back(Token{});
     (*ks->tokens)[ks->tokenIndex].token_type = KEY;
     (*ks->tokens)[ks->tokenIndex].val = ks->key;
     (*ks->tokens)[ks->tokenIndex++].line = ks->line;
@@ -48,7 +48,7 @@ void collect_key(KeyState *ks) {
 
 void collect_value(KeyState *ks) {
   int columns_additions = 0;
-
+  (*ks->tokens).push_back(Token{});
   while (ks->i < ks->size &&
          (ks->state == VALUE && ks->content[++(ks->i)] != '"')) {
     ks->textValue.push_back(ks->content[(ks->i)]);
@@ -82,8 +82,8 @@ void collect_value(KeyState *ks) {
   }
 
   if (columns_additions >= 1) {
+    ks->textValue.push_back('\0');
     ks->value = ks->textValue.data();
-    (*ks->tokens).push_back(Token{});
     (*ks->tokens)[ks->tokenIndex].token_type = VALUE;
     (*ks->tokens)[ks->tokenIndex].val = ks->value;
     (*ks->tokens)[ks->tokenIndex++].line = ks->line;
