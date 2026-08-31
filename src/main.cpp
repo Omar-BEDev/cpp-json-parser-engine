@@ -20,9 +20,10 @@ std::string tokenTypeToString(TokenType type) {
 
 void printTokens(std::vector<Token> tokens) {
     uint i = 0;
+    std::cout << tokens.size() << std::endl;
     while (i < tokens.size()) {
-        std::cout << "[" << tokens[i].val << ": " << tokenTypeToString(tokens[i].token_type)
-                  << " [Lin " << tokens[i].line << ", Col " << tokens[i].column << "]]" << std::endl;
+        std::cout << "(" << tokens[i].val << ": " << tokenTypeToString(tokens[i].token_type)
+                  << " [Lin " << tokens[i].line << ", Col " << tokens[i].column << "])" << std::endl;
         i++;
     }
 }

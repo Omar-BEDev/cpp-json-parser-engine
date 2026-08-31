@@ -7,8 +7,9 @@
 #define BACKSLACH 92
 #define SLACH 47
 #define JSON_HEX_VALUE_LENGTH 4
-#define SPACE_ASSCIV_ALUE 32
-
+#define SPACE_ASSCI_VALUE 32
+#define ASSCI_OPEN_CURLY_BRACES 123
+#define ASSCI_OPEN_SQUARE_BRACKET 91
 typedef struct KeyState {
     std::vector<Token> *tokens ;
     std::string_view key;
@@ -17,7 +18,7 @@ typedef struct KeyState {
     uint i = 0;
     uint size;
     TokenType state = KEY;
-    int line = 0;
+    int line = 1;
     int column = 0;
     uint tokenIndex = 0;
     std::vector<char> textValue;
